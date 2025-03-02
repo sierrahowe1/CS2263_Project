@@ -10,7 +10,7 @@ void readData(const char *file, Student *student, int *numStudents) {
    
    FILE *input = fopen(file, "r");
    if(input == NULL) {
-      printf("Could not open file");
+      perror("Could not open file");
       return EXIT_FAILURE;
    
    }
@@ -23,11 +23,15 @@ void readData(const char *file, Student *student, int *numStudents) {
       
       del = strtok(NULL, ",");//stores the students name
       strncpy(stud->name, del, MAXLENGTH);//copies the name into the name element of the struct
-       
-       
       
+      stud->numGrades = 0;
+      while(stud->numGrades < 10) {//checking if the number of grades is less than the max grades allowed
+         stud->grades[stud->numGrades] = atof(del); //changing the grades from ASCII to float and setting the grades element to be equal to the grades at different positions
+         stud->numGrades++; 
+      }
        
-      stud->GPA = calculateGPA(stud->grades, s->numGrades);//setting the GPA element of the struct to be a function all to calculateGPA
+       
+      stud->GPA = calculateGPA(stud->grades, stud->numGrades);//setting the GPA element of the struct to be a function all to calculateGPA
        
       (*numStudents)++;//incrementing the number of students
       
@@ -35,9 +39,31 @@ void readData(const char *file, Student *student, int *numStudents) {
    
    }
    
+   fclose(input);
+   return EXIT_SUCCESS;
+   
 }
 
-void writeData() {
+void writeData(Student *student, int numStudents) {
+   FILE *output = fopen("studentGrades.txt", "w");
+   if(output == NULL) {
+      perror("Could not open file");
+      return EXIT_FAILURE;
+   }
+   
+   for(int i = 0; i < numStudents; i++) {
+      Student *student1 = &student[i];
+      fprintf(output, "%d,%s", student1->id, student1->name);//printing id and name of the students to the file
+      
+      for(int j = 0; j < student1->numGrades; j++) {
+         fprintf(output, ",%.2f", s->grades[j]);
+      }
+      fprintf("\n");
+   
+   }
+   
+   fclose(output);
+   return EXIT_SUCCESS;
 
 
 
@@ -57,7 +83,6 @@ float calculateGPA(float grades[], int numGrades) {//calculating GPA
    
    GPA = total/numGrades;//calculating GPA
    return GPA;
-   
 }
 
 
