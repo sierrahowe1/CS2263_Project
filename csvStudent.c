@@ -1,9 +1,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define MAXZISIZE 1024
-#define MAXLENGTH 30
+#define MAXSIZE 1024
+#define MAXLEN 30
 #include "student.h"
+
+float calculateGPA(float grades[], int numGrades) {
+    float total = 0.0;
+    float average = 0;
+    if (numGrades == 0) {
+        printf("There are no grades associated with this student\n");
+        return 0.0;
+    }
+    
+    for (int i = 0; i < numGrades; i++) {
+        total += grades[i]; // Sum all grades
+    }
+    
+    average =  total / numGrades; // Calculate and return GPA
+    float GPA = (average/100) * 4.3;
+    return GPA;
+}
+
+
 
 void readData(const char *file, Student *student, int *numStudents) {
     char lines[MAXSIZE];
@@ -15,13 +34,27 @@ void readData(const char *file, Student *student, int *numStudents) {
     }
     
     while (fgets(lines, MAXSIZE, input) != NULL) {
+        if (*numStudents >= 100) { // Ensure we don't exceed the array size
+            printf("Warning: Maximum number of students reached. Skipping the rest.\n");
+            break;
+        }
+        
         Student *stud = &student[*numStudents];
         char *del = strtok(lines, ","); // Tokenize the line using comma as delimiter
         
+        if (del == NULL) {
+            printf("Error: Invalid format in input file.\n");
+            continue;
+        }
         stud->id = atoi(del); // Set the student ID
         
         del = strtok(NULL, ","); // Get the student name
-        strncpy(stud->name, del, MAXLENGTH); // Copy the name into the struct
+        if (del == NULL) {
+            printf("Error: Invalid format in input file.\n");
+            continue;
+        }
+        strncpy(stud->name, del, MAXLEN); // Copy the name into the struct
+        stud->name[MAXLEN - 1] = '\0'; // Ensure null-termination
         
         stud->numGrades = 0;
         while ((del = strtok(NULL, ",")) != NULL && stud->numGrades < 10) {
@@ -48,28 +81,13 @@ void writeData(Student *student, int numStudents) {
         fprintf(output, "%d,%s", student1->id, student1->name); // Print ID and name
         
         for (int j = 0; j < student1->numGrades; j++) {
-            fprintf(output, ",%.2f", student1->grades[j]); // Print grades
+            fprintf(output, ", %.1f", student1->grades[j]); // Print grades
         }
+        fprintf(output,", %.1f",student1->GPA);
         fprintf(output, "\n"); // Print a newline after each student
     }
     
     fclose(output);
-}
-
-float calculateGPA(float grades[], int numGrades) {//calculating GPA
-   float total = 0.0;
-   float GPA;
-   if(numGrades == 0) {
-      printf("There are no grades associated with this student");
-      return 0.0;
-   }
-   
-   for(int i = 0; i < numGrades; i++) {
-      total += grades[i];//adding each grade to the total to create a sum
-   }
-   
-   GPA = total/numGrades;//calculating GPA
-   return GPA;
 }
 
 
