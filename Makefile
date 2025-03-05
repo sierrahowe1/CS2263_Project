@@ -1,24 +1,21 @@
-
-
 GCC = gcc
 CFLAGS = -g -Wall -Wshadow
-SRCS = student.c main.c 
-OBJS = student.o main.o
+SRCS = csvStudent.c main.c 
+OBJS = csvStudent.o main.o
 TARGET = grade_management
 
 all: $(TARGET)
 
-$(TARGET): $(OBJS)
-           $(GCC) $(CFLAGS) $(OBJS) -o $(TARGET)
+$(TARGET): $(SRCS)
+	$(GCC) $(CFLAGS) $(SRCS) -o $(TARGET)
 
 .c.o:
-           $(GCC) $(CFLAGS) -c $*.c
+	$(GCC) $(CFLAGS) -c $*.c
 
 test: $(TARGET)
-      ./$(TARGET) --test
-
+	./$(TARGET) --test
 
 clean:
-       rm -f $(OBJS) $(TARGET)
+	rm -f $(OBJS) $(TARGET)
 
                   
