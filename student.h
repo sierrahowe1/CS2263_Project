@@ -9,6 +9,7 @@ typedef struct
 char name[MAXLENGTH];
 int id;
 float grades[MAXSIZEE];
+char classes[MAXSIZEE][MAXLENGTH];
 int numGrades;
 float GPA;
 
