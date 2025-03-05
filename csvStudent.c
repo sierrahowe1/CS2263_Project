@@ -18,11 +18,9 @@ float calculateGPA(float grades[], int numGrades) {
     }
     
     average =  total / numGrades; // Calculate and return GPA
-    float GPA = (average/100) * 4.3;
+    float GPA = (average / 100) * 4.3;
     return GPA;
 }
-
-
 
 void readData(const char *file, Student *student, int *numStudents) {
     char lines[MAXSIZE];
@@ -58,6 +56,16 @@ void readData(const char *file, Student *student, int *numStudents) {
         
         stud->numGrades = 0;
         while ((del = strtok(NULL, ",")) != NULL && stud->numGrades < 10) {
+            
+            strncpy(stud->classes[stud->numGrades], del, MAXLEN); 
+            stud->classes[stud->numGrades][MAXLEN - 1] = '\0';
+            
+            del = strtok(NULL, ",");
+            
+            if(del == NULL) {
+                printf("Error: No grades for this student\n");
+                break;
+            }
             stud->grades[stud->numGrades] = atof(del); // Convert grade to float and store it
             stud->numGrades++; // Increment the number of grades
         }
@@ -78,12 +86,17 @@ void writeData(Student *student, int numStudents) {
     
     for (int i = 0; i < numStudents; i++) {
         Student *student1 = &student[i];
-        fprintf(output, "%d,%s", student1->id, student1->name); // Print ID and name
+        fprintf(output, "%d, %s,", student1->id, student1->name); // Print ID and name
         
-        for (int j = 0; j < student1->numGrades; j++) {
-            fprintf(output, ", %.1f", student1->grades[j]); // Print grades
+        if(student1->numGrades != 0) {
+            // If there are grades, print each grade and class
+            for (int j = 0; j < student1->numGrades; j++) {
+                fprintf(output, "%s, %.1f,", student1->classes[j], student1->grades[j]); // Print class and grade
+            }
         }
-        fprintf(output,", %.1f",student1->GPA);
+        
+        // Only print GPA, even if no grades are available
+        fprintf(output, ", %.1f", student1->GPA);
         fprintf(output, "\n"); // Print a newline after each student
     }
     
