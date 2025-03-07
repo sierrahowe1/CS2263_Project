@@ -22,7 +22,7 @@ float calculateGPA(float grades[], int numGrades) {
     return GPA;
 }
 
-void readData(const char *file, Student *student, int *numStudents) {//numStudents is a pointer because it will be modified as the students are read in
+void readData(const char *file, Student *student, int *numStudents) {
     char lines[MAXSIZE];
     
     FILE *input = fopen(file, "r");
@@ -77,8 +77,8 @@ void readData(const char *file, Student *student, int *numStudents) {//numStuden
     fclose(input);
 }
 
-void writeData(Student *student, int numStudents) {//numStudents is not a pointer here because it will not change
-    FILE *output = fopen("studentGrades.txt", "w");
+void writeData(Student *student, int numStudents) {
+    FILE *output = fopen("studentGrades.csv", "w");
     if (output == NULL) {
         perror("Could not open file");
         return;
@@ -102,6 +102,7 @@ void writeData(Student *student, int numStudents) {//numStudents is not a pointe
     
     fclose(output);
 }
+
 
 
 
