@@ -78,56 +78,63 @@ void merge(Student arr[], int l, int m, int r, int type) {
 
 void readData(const char *file, Student *student, int *numStudents) {
     char lines[MAXSIZE];
-    
+
     FILE *input = fopen(file, "r");
     if (input == NULL) {
         perror("Could not open file");
         return;
     }
-    
+
     while (fgets(lines, MAXSIZE, input) != NULL) {
-        if (*numStudents >= 100) { // Ensure we don't exceed the array size
+        if (*numStudents >= 100) { 
             printf("Warning: Maximum number of students reached. Skipping the rest.\n");
             break;
         }
-        
+
         Student *stud = &student[*numStudents];
-        char *del = strtok(lines, ","); // Tokenize the line using comma as delimiter
-        
+        char *del = strtok(lines, ","); 
+
         if (del == NULL) {
             printf("Error: Invalid format in input file.\n");
             continue;
         }
-        stud->id = atoi(del); // Set the student ID
-        
-        del = strtok(NULL, ","); // Get the student name
+        stud->id = atoi(del); 
+
+        del = strtok(NULL, ","); 
         if (del == NULL) {
             printf("Error: Invalid format in input file.\n");
             continue;
         }
-        strncpy(stud->name, del, MAXLEN); // Copy the name into the struct
-        stud->name[MAXLEN - 1] = '\0'; // Ensure null-termination
+        strncpy(stud->name, del, MAXLEN); 
+        stud->name[MAXLEN - 1] = '\0'; 
         
         stud->numGrades = 0;
-        while ((del = strtok(NULL, ",")) != NULL && stud->numGrades < 10) {
-            
-            strncpy(stud->classes[stud->numGrades], del, MAXLEN); 
+        while ((del = strtok(NULL, ",\n")) != NULL) {
+            if (stud->numGrades >= MAXSIZEE) break;  // Prevent exceeding array bounds
+
+            // Store class
+            strncpy(stud->classes[stud->numGrades], del, MAXLEN);
             stud->classes[stud->numGrades][MAXLEN - 1] = '\0';
-            
-            del = strtok(NULL, ",");
-            
-            if(del == NULL) {
-                printf("Error: No grades for this student\n");
-                break;
+
+            // Get next token, expecting a grade
+            del = strtok(NULL, ",\n");
+            if (del == NULL) {
+                del = "0.00"; //if NULL set grade to 0.00
             }
-            stud->grades[stud->numGrades] = atof(del); // Convert grade to float and store it
-            stud->numGrades++; // Increment the number of grades
+
+            // Store grade
+            stud->grades[stud->numGrades] = atof(del);
+            stud->numGrades++;
         }
-        
-        stud->GPA = calculateGPA(stud->grades, stud->numGrades); // Calculate GPA
-        (*numStudents)++; // Increment the number of students
+
+        // Calculate GPA only if the student has grades
+        if (stud->numGrades > 0) {
+            stud->GPA = calculateGPA(stud->grades, stud->numGrades);
+        } else {
+            stud->GPA = 0.0;  // No grades, set GPA to 0
+        }
+        (*numStudents)++;
     }
-    
     fclose(input);
 }
 
@@ -145,9 +152,6 @@ void mergeSort(Student arr[], int left, int right, int type) {
 }
 
 
-
-
-
 void writeData(Student *student, int numStudents) {
     FILE *output = fopen("studentGrades.csv", "w");
     if (output == NULL) {
@@ -157,41 +161,18 @@ void writeData(Student *student, int numStudents) {
     
     for (int i = 0; i < numStudents; i++) {
         Student *student1 = &student[i];
-        fprintf(output, "%d, %s,", student1->id, student1->name); // Print ID and name
-        
-        if(student1->numGrades != 0) {
-            // If there are grades, print each grade and class
-            for (int j = 0; j < student1->numGrades; j++) {
-                fprintf(output, "%s, %.1f,", student1->classes[j], student1->grades[j]); // Print class and grade
-            }
+
+        fprintf(output, "%d, %s", student1->id, student1->name);
+
+        // Ensure all grades print properly
+        for (int j = 0; j < student1->numGrades; j++) {
+            fprintf(output, ", %s, %.1f", student1->classes[j], student1->grades[j]);
         }
-        
-        // Only print GPA, even if no grades are available
-        fprintf(output, ", %.1f", student1->GPA);
-        fprintf(output, "\n"); // Print a newline after each student
+
+        // GPA should always be on the same line
+        fprintf(output, ", GPA: %.1f\n", student1->GPA);
     }
-    
+
     fclose(output);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
