@@ -10,6 +10,7 @@ float calculateGPA(float grades[], int numGrades);
 int main() {
     Student stud[MAXSTUD];
     int numStudents = 0;
+    int type;
     
     readData("student.csv", stud, &numStudents);
     
@@ -26,6 +27,11 @@ int main() {
        printf("\n");
        
     }
+    
+    printf("How do you want to sort: 1.)ID 2.)GPA .3)Name ");
+    scanf("%d", &type);
+    
+    mergeSort()
     
     
     
