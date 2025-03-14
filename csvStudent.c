@@ -34,14 +34,14 @@ int compare(const void* a, const void* b, int type) {
 
 
 void merge(Student arr[], int l, int m, int r, int type) {
-    int n1 = m - l + 1; // Size of the left subarray
-    int n2 = r - m;    // Size of the right subarray
+    int n1 = m - l + 1; 
+    int n2 = r - m;    
 
-    // Create temporary arrays for left and right subarrays
+    
     Student leftArr[n1];
     Student rightArr[n2];
 
-    // Copy data to temporary arrays
+    
     for (int i = 0; i < n1; i++)
         leftArr[i] = arr[l + i];
     for (int i = 0; i < n2; i++)
@@ -49,7 +49,7 @@ void merge(Student arr[], int l, int m, int r, int type) {
 
     int i = 0, j = 0, k = l;
     
-    // Merge the temporary arrays back into the original array
+    
     while (i < n1 && j < n2) {
         if (compare(&leftArr[i], &rightArr[j], type) <= 0) {
             arr[k] = leftArr[i];
@@ -61,14 +61,14 @@ void merge(Student arr[], int l, int m, int r, int type) {
         k++;
     }
 
-    // Copy the remaining elements of leftArr, if any
+    
     while (i < n1) {
         arr[k] = leftArr[i];
         i++;
         k++;
     }
 
-    // Copy the remaining elements of rightArr, if any
+    
     while (j < n2) {
         arr[k] = rightArr[j];
         j++;
@@ -110,28 +110,28 @@ void readData(const char *file, Student *student, int *numStudents) {
         
         stud->numGrades = 0;
         while ((del = strtok(NULL, ",\n")) != NULL) {
-            if (stud->numGrades >= MAXSIZEE) break;  // Prevent exceeding array bounds
+            if (stud->numGrades >= MAXSIZEE) break;  
 
-            // Store class
+            
             strncpy(stud->classes[stud->numGrades], del, MAXLEN);
             stud->classes[stud->numGrades][MAXLEN - 1] = '\0';
 
-            // Get next token, expecting a grade
+            
             del = strtok(NULL, ",\n");
             if (del == NULL) {
-                del = "0.00"; //if NULL set grade to 0.00
+                del = "0.00"; 
             }
 
-            // Store grade
+            
             stud->grades[stud->numGrades] = atof(del);
             stud->numGrades++;
         }
 
-        // Calculate GPA only if the student has grades
+        
         if (stud->numGrades > 0) {
             stud->GPA = calculateGPA(stud->grades, stud->numGrades);
         } else {
-            stud->GPA = 0.0;  // No grades, set GPA to 0
+            stud->GPA = 0.0;  
         }
         (*numStudents)++;
     }
@@ -142,11 +142,11 @@ void mergeSort(Student arr[], int left, int right, int type) {
     if (left < right) {
         int mid = left + (right - left) / 2; // Find the middle point
         
-        // Recursively sort the first and second halves
+        
         mergeSort(arr, left, mid, type);
         mergeSort(arr, mid + 1, right, type);
 
-        // Merge the sorted halves
+        
         merge(arr, left, mid, right, type);
     }
 }
@@ -164,12 +164,12 @@ void writeData(Student *student, int numStudents) {
 
         fprintf(output, "%d, %s", student1->id, student1->name);
 
-        // Ensure all grades print properly
+        
         for (int j = 0; j < student1->numGrades; j++) {
             fprintf(output, ", %s, %.1f", student1->classes[j], student1->grades[j]);
         }
 
-        // GPA should always be on the same line
+        
         fprintf(output, ", GPA: %.1f\n", student1->GPA);
     }
 
