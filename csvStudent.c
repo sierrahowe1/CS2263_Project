@@ -14,10 +14,10 @@ float calculateGPA(float grades[], int numGrades) {
     }
     
     for (int i = 0; i < numGrades; i++) {
-        total += grades[i]; // Sum all grades
+        total += grades[i]; 
     }
     
-    average =  total / numGrades; // Calculate and return GPA
+    average =  total / numGrades; 
     float GPA = (average / 100) * 4.3;
     return GPA;
 }
@@ -140,7 +140,7 @@ void readData(const char *file, Student *student, int *numStudents) {
 
 void mergeSort(Student arr[], int left, int right, int type) {
     if (left < right) {
-        int mid = left + (right - left) / 2; // Find the middle point
+        int mid = left + (right - left) / 2; 
         
         
         mergeSort(arr, left, mid, type);
@@ -149,6 +149,68 @@ void mergeSort(Student arr[], int left, int right, int type) {
         
         merge(arr, left, mid, right, type);
     }
+}
+
+Student *searchName(Student arr[], char *name, int numStudents) {
+   for(int i = 0; i < numStudents; i++) {
+      if(strcmp(arr[i].name, name) == 0) {
+         return &arr[i];
+      }
+   }
+   return NULL;
+}
+
+Student *searchID(Student arr[], int Id, int numStudents) {
+   for(int i = 0; i < numStudents; i++) {
+      if(arr[i].id == Id) {
+         return &arr[i];
+      }
+   }
+   return NULL;
+
+}
+
+void searchForStudent(Student students[], int numStudents) {
+   int choice;
+   printf("1.) Name, 2.) ID\n");
+   printf("Choose searching criteria: ");
+   scanf("%d", &choice);
+   
+   if(choice == 1) {
+      char name[1024];
+      printf("Enter students name: ");
+      scanf("%[^\n]", name);
+   
+   
+      Student *student = searchName(students, name, numStudents);
+      if(student != NULL) {
+         printf("Student successfully located!\n");
+         printf("ID: %d, Name: %s, GPA: %.2f\n", student->id, student->name, student->GPA);
+      }
+      else {
+         printf("Student not found.\n");
+      }
+   
+   }
+   else if(choice == 2) {
+      int id;
+      printf("Enter student ID: ");
+      scanf("%d", &id);
+      
+      Student *student = searchID(students, id, numStudents);
+      if(student != NULL) {
+         printf("Student successfully located:\n");
+         printf("ID: %d, Name: %s, GPA: %.2f\n", student->id, student->name, student->GPA);
+      }
+      else {
+         printf("Student not found.\n");
+      }
+      
+   }
+   else {
+      printf("Must enter a valid choice\n");
+   } 
+   
 }
 
 
