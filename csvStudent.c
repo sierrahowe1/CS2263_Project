@@ -4,6 +4,7 @@
 #define MAXSIZE 1024
 #define MAXLEN 30
 #include "student.h"
+#include <ctype.h>
 
 float calculateGPA(float grades[], int numGrades) {
     float total = 0.0;
@@ -76,6 +77,28 @@ void merge(Student arr[], int l, int m, int r, int type) {
     }
 }
 
+char *trim(char *s) {
+   int start = 0;
+   int end = 0;
+   
+   while(isspace(s[start])) {
+      start++;
+   }
+   
+   while ((s[end] = s[start])) {
+      start++;
+      end++;
+   }
+   
+   end--;
+   while(end >= 0 && isspace(s[end])) {
+      s[end] = '\0';
+      end--;
+   }
+   return s;
+}
+
+
 void readData(const char *file, Student *student, int *numStudents) {
     char lines[MAXSIZE];
 
@@ -87,7 +110,7 @@ void readData(const char *file, Student *student, int *numStudents) {
 
     while (fgets(lines, MAXSIZE, input) != NULL) {
         if (*numStudents >= 100) { 
-            printf("Warning: Maximum number of students reached. Skipping the rest.\n");
+            printf("Out of bounds.\n");
             break;
         }
 
@@ -95,18 +118,19 @@ void readData(const char *file, Student *student, int *numStudents) {
         char *del = strtok(lines, ","); 
 
         if (del == NULL) {
-            printf("Error: Invalid format in input file.\n");
+            printf("Invalid input file.\n");
             continue;
         }
         stud->id = atoi(del); 
 
         del = strtok(NULL, ","); 
         if (del == NULL) {
-            printf("Error: Invalid format in input file.\n");
+            printf("Invalid input file.\n");
             continue;
         }
         strncpy(stud->name, del, MAXLEN); 
         stud->name[MAXLEN - 1] = '\0'; 
+        trim(stud->name);
         
         stud->numGrades = 0;
         while ((del = strtok(NULL, ",\n")) != NULL) {
@@ -151,9 +175,10 @@ void mergeSort(Student arr[], int left, int right, int type) {
     }
 }
 
+
 Student *searchName(Student arr[], char *name, int numStudents) {
    for(int i = 0; i < numStudents; i++) {
-      if(strcmp(arr[i].name, name) == 0) {
+      if(strcasecmp(arr[i].name, name) == 0) {
          return &arr[i];
       }
    }
@@ -170,22 +195,31 @@ Student *searchID(Student arr[], int Id, int numStudents) {
 
 }
 
+
 void searchForStudent(Student students[], int numStudents) {
+   
    int choice;
    printf("1.) Name, 2.) ID\n");
    printf("Choose searching criteria: ");
    scanf("%d", &choice);
    
+   
+   for(int i = 0; i < numStudents; i++) {
+      printf("%s\n", students[i].name);
+   }
+   
+   
+   
    if(choice == 1) {
-      char name[1024];
+      char name[MAXSIZEE];
       printf("Enter students name: ");
-      scanf("%[^\n]", name);
+      scanf(" %[^\n]", name);
    
    
       Student *student = searchName(students, name, numStudents);
       if(student != NULL) {
          printf("Student successfully located!\n");
-         printf("ID: %d, Name: %s, GPA: %.2f\n", student->id, student->name, student->GPA);
+         printf("ID: %d, Name: %s, GPA: %.1f\n", student->id, trim(student->name), student->GPA);
       }
       else {
          printf("Student not found.\n");
@@ -200,7 +234,7 @@ void searchForStudent(Student students[], int numStudents) {
       Student *student = searchID(students, id, numStudents);
       if(student != NULL) {
          printf("Student successfully located:\n");
-         printf("ID: %d, Name: %s, GPA: %.2f\n", student->id, student->name, student->GPA);
+         printf("ID: %d, Name: %s, GPA: %.1f\n", student->id, student->name, student->GPA);
       }
       else {
          printf("Student not found.\n");
@@ -209,7 +243,7 @@ void searchForStudent(Student students[], int numStudents) {
    }
    else {
       printf("Must enter a valid choice\n");
-   } 
+   }
    
 }
 
