@@ -133,7 +133,7 @@ void readData(const char *file, Student *student, int *numStudents) {
         Student *stud = &student[*numStudents];
         char *del = strtok(lines, ","); 
 
-        if (del == NULL || strlen(del) == 0) {
+        if (del == NULL) {
             printf("Invalid format.\n");
             continue;
             
@@ -141,7 +141,7 @@ void readData(const char *file, Student *student, int *numStudents) {
         stud->id = atoi(del); 
 
         del = strtok(NULL, ","); 
-        if (del == NULL || strlen(del) == 0) {
+        if (del == NULL) {
             printf("Invalid format.\n");
             continue;
             
@@ -154,6 +154,7 @@ void readData(const char *file, Student *student, int *numStudents) {
         stud->numGrades = 0;
         while ((del = strtok(NULL, ",\n")) != NULL) {
             if (stud->numGrades >= MAXSIZEE) {
+               printf("Grades are full");
                break;
             }  
 
