@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #define MAXSIZE 1024
 #define MAXLEN 30
 #include "student.h"
@@ -35,7 +36,14 @@ int compare(const void* a, const void* b, int type) {
     Student* s2 = (Student*)b;
     int value;
     if (type == 1) {value = s1->id - s2->id;}
-    else if (type == 2) {value = s1->GPA - s2->GPA;}
+    else if (type == 2) {
+                         if(fabs(s1->GPA - s2->GPA) < 0.00001f) {
+                            value = 0;
+                         } else if (s1->GPA < s2->GPA) {
+                           value = -1; 
+                         } else {
+                           value = 1; 
+                         }}
     else if (type == 3) {value = strcmp(s1->name, s2->name);}
     return value;
 }
