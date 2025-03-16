@@ -14,8 +14,15 @@ float calculateGPA(float grades[], int numGrades) {
         return 0.0;
     }
     
+    
     for (int i = 0; i < numGrades; i++) {
-        total += grades[i]; 
+       if(grades[i] > 100 || grades[i] < 0) {
+          printf("Invalid grade detected.\n");
+          return 0.0;
+       }
+       else {
+          total += grades[i]; 
+       }
     }
     
     average =  total / numGrades; 
@@ -107,6 +114,7 @@ void readData(const char *file, Student *student, int *numStudents) {
         perror("Could not open file");
         return;
     }
+    
 
     while (fgets(lines, MAXSIZE, input) != NULL) {
         if (*numStudents >= 100) { 
@@ -117,16 +125,19 @@ void readData(const char *file, Student *student, int *numStudents) {
         Student *stud = &student[*numStudents];
         char *del = strtok(lines, ","); 
 
-        if (del == NULL) {
-            printf("Invalid input file.\n");
+        if (del == NULL || strlen(del) == 0) {
+            printf("Invalid format.\n");
             continue;
+            
         }
         stud->id = atoi(del); 
 
         del = strtok(NULL, ","); 
-        if (del == NULL) {
-            printf("Invalid input file.\n");
+        if (del == NULL || strlen(del) == 0) {
+            printf("Invalid format.\n");
             continue;
+            
+            
         }
         strncpy(stud->name, del, MAXLEN); 
         stud->name[MAXLEN - 1] = '\0'; 
@@ -134,7 +145,9 @@ void readData(const char *file, Student *student, int *numStudents) {
         
         stud->numGrades = 0;
         while ((del = strtok(NULL, ",\n")) != NULL) {
-            if (stud->numGrades >= MAXSIZEE) break;  
+            if (stud->numGrades >= MAXSIZEE) {
+               break;
+            }  
 
             
             strncpy(stud->classes[stud->numGrades], del, MAXLEN);
@@ -143,7 +156,8 @@ void readData(const char *file, Student *student, int *numStudents) {
             
             del = strtok(NULL, ",\n");
             if (del == NULL) {
-                del = "0.00"; 
+                del = "0.0";
+                
             }
 
             
@@ -158,7 +172,16 @@ void readData(const char *file, Student *student, int *numStudents) {
             stud->GPA = 0.0;  
         }
         (*numStudents)++;
+        
+        
     }
+    
+    
+    if(*numStudents == 0) {
+       printf("This file is empty.\n");
+    }
+    
+    
     fclose(input);
 }
 
