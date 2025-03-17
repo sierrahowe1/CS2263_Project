@@ -7,6 +7,8 @@
 #include "student.h"
 #include <ctype.h>
 
+float fmodf(float x, float y);
+
 float calculateGPA(float grades[], int numGrades) {
     float total = 0.0;
     float average = 0;
@@ -236,11 +238,6 @@ void searchForStudent(Student students[], int numStudents) {
    scanf("%d", &choice);
    
    
-   for(int i = 0; i < numStudents; i++) {
-      printf("%s\n", students[i].name);
-   }
-   
-   
    
    if(choice == 1) {
       char name[MAXSIZEE];
@@ -276,6 +273,21 @@ void searchForStudent(Student students[], int numStudents) {
    else {
       printf("Must enter a valid choice\n");
    }
+   
+}
+
+
+void printBarChart(Student student) {
+   int numBars;
+   for(int i = 0; i < student.numGrades; i++) {
+      printf("%s |", student.classes[i]);
+      numBars = fmodf((student.grades[i])/10, 10);
+      for(int j = 0; j <= numBars; j++) {
+         printf("#");
+      }
+      printf(" (%.1f)\n", student.grades[i]);
+   }
+   
    
 }
 
