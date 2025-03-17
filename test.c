@@ -10,6 +10,8 @@ void mergeSort(Student arr[], int left, int right, int type);
 void searchForStudent(Student students[], int numStudents);
 Student *searchID(Student arr[], int Id, int numStudents);
 Student *searchName(Student arr[], char *name, int numStudents);
+void printBarChart(Student student);
+float fmodf(float x, float y);
 
 int main() {
    //testing GPA
@@ -39,10 +41,14 @@ int main() {
    readData("student.csv", stud, &numStudents);
    int type;
    
+   
+   
    Student student[] = {
    {1, "sierra", {95.0, 67.0, 55.0}, {"Java","Chemistry","Calculus"}, 3, 3.1},
    {2, "juanita", {99.0, 100.0, 44.0}, {"Math","Science","English"}, 3, 3.5},
    {4, "Another", {80.0, 75.0}, {"Math","Science"}, 2, 3.3 }}; 
+   
+   printBarChart(student[0]);
   
    printf("\n --How do you want to sort the students:\n 1.) ID\n 2.) GPA\n 3.) Name\n ");
             printf("Choice of sort: ");
@@ -50,7 +56,11 @@ int main() {
             mergeSort(student, 0, numStudents-1, type);
             for (int i = 0; i < 3; i++) {
             printf("%d, %s, %.1f", student[i].id, student[i].name, student[i].GPA);
+            
             for (int j = 0; j < student[i].numGrades; j++) {
-            printf(", %s, %.1f", student[i].classes[j], student[i].grades[j]);}
+            printf(", %s, %.1f", student[i].classes[j], student[i].grades[j]);
+            
+            }
             printf("\n");
+            
   }}
