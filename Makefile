@@ -7,7 +7,7 @@ TARGET = grade_management
 all: $(TARGET)
 
 $(TARGET): $(SRCS)
-	$(GCC) $(CFLAGS) $(SRCS) -o $(TARGET)
+	$(GCC) $(CFLAGS) $(SRCS) -o $(TARGET) -lm
 
 .c.o:
 	$(GCC) $(CFLAGS) -c $*.c
