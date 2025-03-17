@@ -52,43 +52,45 @@ int compare(const void* a, const void* b, int type) {
 
 
 void merge(Student arr[], int l, int m, int r, int type) {
-    int n1 = m - l + 1; 
-    int n2 = r - m;    
+    int student1 = m - l + 1; 
+    int student2 = r - m;    
 
     
-    Student leftArr[n1];
-    Student rightArr[n2];
+    Student leftSide[n1];
+    Student rightSide[n2];
 
     
-    for (int i = 0; i < n1; i++)
-        leftArr[i] = arr[l + i];
-    for (int i = 0; i < n2; i++)
-        rightArr[i] = arr[m + 1 + i];
+    for (int i = 0; i < student1; i++)
+        leftSide[i] = arr[l + i];
+    for (int i = 0; i < student2; i++)
+        rightSide[i] = arr[m + 1 + i];
 
-    int i = 0, j = 0, k = l;
+    int i = 0; 
+    int j = 0; 
+    int k = l;
     
     
-    while (i < n1 && j < n2) {
-        if (compare(&leftArr[i], &rightArr[j], type) <= 0) {
-            arr[k] = leftArr[i];
+    while (i < student1 && j < student2) {
+        if (compare(&leftSide[i], &rightSide[j], type) <= 0) {
+            arr[k] = leftSide[i];
             i++;
         } else {
-            arr[k] = rightArr[j];
+            arr[k] = rightSide[j];
             j++;
         }
         k++;
     }
 
     
-    while (i < n1) {
-        arr[k] = leftArr[i];
+    while (i < student1) {
+        arr[k] = leftSide[i];
         i++;
         k++;
     }
 
     
     while (j < n2) {
-        arr[k] = rightArr[j];
+        arr[k] = rightSide[j];
         j++;
         k++;
     }
