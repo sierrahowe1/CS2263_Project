@@ -56,8 +56,8 @@ void merge(Student arr[], int l, int m, int r, int type) {
     int student2 = r - m;    
 
     
-    Student leftSide[n1];
-    Student rightSide[n2];
+    Student leftSide[student1];
+    Student rightSide[student2];
 
     
     for (int i = 0; i < student1; i++)
@@ -65,8 +65,8 @@ void merge(Student arr[], int l, int m, int r, int type) {
     for (int i = 0; i < student2; i++)
         rightSide[i] = arr[m + 1 + i];
 
-    int i = 0; 
-    int j = 0; 
+    int i = 0;
+    int j = 0;
     int k = l;
     
     
@@ -89,7 +89,7 @@ void merge(Student arr[], int l, int m, int r, int type) {
     }
 
     
-    while (j < n2) {
+    while (j < student2) {
         arr[k] = rightSide[j];
         j++;
         k++;
@@ -283,8 +283,18 @@ void printBarChart(Student student) {
    int numBars;
    for(int i = 0; i < student.numGrades; i++) {
       printf("%s |", student.classes[i]);
-      numBars = fmodf((student.grades[i])/10, 10);
-      for(int j = 0; j <= numBars; j++) {
+         if(student.grades[i] > 0 && student.grades[i] < 100) {
+            numBars = fmodf((student.grades[i])/10, 10);
+         }
+         else if(student.grades[i] == 100) {
+            numBars = (student.grades[i])/10;
+         }
+         else {
+            printf("Invalid grade found");
+            break;
+         }
+      
+      for(int j = 0; j < numBars; j++) {
          printf("#");
       }
       printf(" (%.1f)\n", student.grades[i]);
