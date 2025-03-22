@@ -9,6 +9,30 @@
 
 float fmodf(float x, float y);
 
+
+void addStudent(StudentNode** head, Student newStudent) {
+   StudentNode *node = (StudentNode *)malloc(sizeof(StudentNode));
+   if(node == NULL) {
+      printf("Could not allocate memory");
+      return;
+   }
+   node->data = newStudent;
+   node->next = NULL;
+   
+   if(*head == NULL) {
+      *head = node;
+   }
+   else {
+      StudentNode *current = *head;
+      while(current->next != NULL) {
+         current = current->next;
+      }
+      current->next = node;
+   }
+
+}
+
+
 float calculateGPA(float grades[], int numGrades) {
     float total = 0.0;
     float average = 0;
@@ -51,49 +75,22 @@ int compare(const void* a, const void* b, int type) {
 }
 
 
-void merge(Student arr[], int l, int m, int r, int type) {
-    int student1 = m - l + 1; 
-    int student2 = r - m;    
-
-    
-    Student leftSide[student1];
-    Student rightSide[student2];
-
-    
-    for (int i = 0; i < student1; i++)
-        leftSide[i] = arr[l + i];
-    for (int i = 0; i < student2; i++)
-        rightSide[i] = arr[m + 1 + i];
-
-    int i = 0;
-    int j = 0;
-    int k = l;
-    
-    
-    while (i < student1 && j < student2) {
-        if (compare(&leftSide[i], &rightSide[j], type) <= 0) {
-            arr[k] = leftSide[i];
-            i++;
-        } else {
-            arr[k] = rightSide[j];
-            j++;
-        }
-        k++;
-    }
-
-    
-    while (i < student1) {
-        arr[k] = leftSide[i];
-        i++;
-        k++;
-    }
-
-    
-    while (j < student2) {
-        arr[k] = rightSide[j];
-        j++;
-        k++;
-    }
+StudentNode *merge(StudentNode *node1, StudentNode *node2, int type) {
+   if(node1 == NULL) {
+      return node2;
+   }
+   if(node2 == NULL) {
+      return node1;
+   }
+   
+   if(compare(&node1->data, &node2->data, type) <= 0) {
+      node1->next = merge(node1->next, node2, type);
+      return node1;
+   }
+   else {
+      node2->next = merge(node1, node2->next, type);
+      return node2;
+   }
 }
 
 char *trim(char *s) {
@@ -118,7 +115,7 @@ char *trim(char *s) {
 }
 
 
-void readData(const char *file, Student *student, int *numStudents) {
+void readData(const char *file, StudentNode** head, int *numStudents) {
     char lines[MAXSIZE];
 
     FILE *input = fopen(file, "r");
@@ -134,7 +131,7 @@ void readData(const char *file, Student *student, int *numStudents) {
             break;
         }
 
-        Student *stud = &student[*numStudents];
+        Student stud;
         char *del = strtok(lines, ","); 
 
         if (del == NULL) {
@@ -142,7 +139,7 @@ void readData(const char *file, Student *student, int *numStudents) {
             continue;
             
         }
-        stud->id = atoi(del); 
+        stud.id = atoi(del); 
 
         del = strtok(NULL, ","); 
         if (del == NULL) {
@@ -151,20 +148,20 @@ void readData(const char *file, Student *student, int *numStudents) {
             
             
         }
-        strncpy(stud->name, del, MAXLEN); 
-        stud->name[MAXLEN - 1] = '\0'; 
-        trim(stud->name);
+        strncpy(stud.name, del, MAXLEN); 
+        stud.name[MAXLEN - 1] = '\0'; 
+        trim(stud.name);
         
-        stud->numGrades = 0;
+        stud.numGrades = 0;
         while ((del = strtok(NULL, ",\n")) != NULL) {
-            if (stud->numGrades >= MAXSIZEE) {
+            if (stud.numGrades >= MAXSIZEE) {
                printf("Grades are full");
                break;
             }  
 
             
-            strncpy(stud->classes[stud->numGrades], del, MAXLEN);
-            stud->classes[stud->numGrades][MAXLEN - 1] = '\0';
+            strncpy(stud.classes[stud.numGrades], del, MAXLEN);
+            stud.classes[stud.numGrades][MAXLEN - 1] = '\0';
 
             
             del = strtok(NULL, ",\n");
@@ -174,16 +171,18 @@ void readData(const char *file, Student *student, int *numStudents) {
             }
 
             
-            stud->grades[stud->numGrades] = atof(del);
-            stud->numGrades++;
+            stud.grades[stud.numGrades] = atof(del);
+            stud.numGrades++;
         }
 
         
-        if (stud->numGrades > 0) {
-            stud->GPA = calculateGPA(stud->grades, stud->numGrades);
+        if (stud.numGrades > 0) {
+            stud.GPA = calculateGPA(stud.grades, stud.numGrades);
         } else {
-            stud->GPA = 0.0;  
+            stud.GPA = 0.0;  
         }
+        printf("%d, %s", stud.id, stud.name);
+        addStudent(head, stud);
         (*numStudents)++;
         
         
@@ -198,41 +197,66 @@ void readData(const char *file, Student *student, int *numStudents) {
     fclose(input);
 }
 
-void mergeSort(Student arr[], int left, int right, int type) {
-    if (left < right) {
-        int mid = left + (right - left) / 2; 
-        
-        
-        mergeSort(arr, left, mid, type);
-        mergeSort(arr, mid + 1, right, type);
-
-        
-        merge(arr, left, mid, right, type);
-    }
+void split(StudentNode *head, StudentNode **a, StudentNode **b) {
+   StudentNode *fast = head;
+   StudentNode *slow = head;
+   
+   while(fast != NULL && fast->next != NULL) {
+      fast = fast->next->next;
+      if(fast != NULL) {
+         slow = slow->next;
+      }
+   }
+   
+   *a = head;
+   *b = slow->next;
+   slow->next = NULL;
 }
 
 
-Student *searchName(Student arr[], char *name, int numStudents) {
-   for(int i = 0; i < numStudents; i++) {
-      if(strcasecmp(arr[i].name, name) == 0) {
-         return &arr[i];
+void mergeSort(StudentNode** head, int type) {
+   StudentNode *head2 = *head;
+   StudentNode *a;
+   StudentNode *b;
+   
+   if(head2 == NULL || head2->next == NULL) {
+      return;
+   }
+   
+   split(head2, &a, &b);
+   mergeSort(&a, type);
+   mergeSort(&b, type);
+   
+   *head = merge(a, b, type);
+    
+}
+
+
+Student *searchName(StudentNode **head, char *name) {
+   StudentNode *current = *head;
+   while(current != NULL) {
+      if(strcasecmp(current->data.name, name) == 0) {
+         return &current->data;
       }
+      current = current->next;
    }
    return NULL;
 }
 
-Student *searchID(Student arr[], int Id, int numStudents) {
-   for(int i = 0; i < numStudents; i++) {
-      if(arr[i].id == Id) {
-         return &arr[i];
+Student *searchID(StudentNode **head, int Id) {
+   StudentNode *current = *head;
+   while(current != NULL) {
+      if(current->data.id == Id) {
+         return &current->data;
       }
+      current = current->next;
    }
    return NULL;
 
 }
 
 
-void searchForStudent(Student students[], int numStudents) {
+void searchForStudent(StudentNode **head, int numStudents) {
    
    int choice;
    printf("1.) Name, 2.) ID\n");
@@ -247,7 +271,7 @@ void searchForStudent(Student students[], int numStudents) {
       scanf(" %[^\n]", name);
    
    
-      Student *student = searchName(students, name, numStudents);
+      Student *student = searchName(head, name);
       if(student != NULL) {
          printf("Student successfully located!\n");
          printf("ID: %d, Name: %s, GPA: %.1f\n", student->id, trim(student->name), student->GPA);
@@ -262,7 +286,7 @@ void searchForStudent(Student students[], int numStudents) {
       printf("Enter student ID: ");
       scanf("%d", &id);
       
-      Student *student = searchID(students, id, numStudents);
+      Student *student = searchID(head, id);
       if(student != NULL) {
          printf("Student successfully located:\n");
          printf("ID: %d, Name: %s, GPA: %.1f\n", student->id, student->name, student->GPA);
@@ -304,27 +328,24 @@ void printBarChart(Student student) {
 }
 
 
-void writeData(Student *student, int numStudents) {
+void writeData(StudentNode** head, int numStudents) {
     FILE *output = fopen("studentGrades.csv", "w");
     if (output == NULL) {
         perror("Could not open file");
         return;
     }
     
-    for (int i = 0; i < numStudents; i++) {
-        Student *student1 = &student[i];
-
-        fprintf(output, "%d, %s", student1->id, student1->name);
-
-        
-        for (int j = 0; j < student1->numGrades; j++) {
-            fprintf(output, ", %s, %.1f", student1->classes[j], student1->grades[j]);
+    StudentNode *current = *head;
+    
+    while(current != NULL) {
+       fprintf(output, "%d, %s", current->data.id, current->data.name);
+       for (int j = 0; j < current->data.numGrades; j++) {
+            fprintf(output, ", %s, %.1f", current->data.classes[j], current->data.grades[j]);
         }
-
-        
-        fprintf(output, ", GPA: %.1f\n", student1->GPA);
+        fprintf(output, ", GPA: %.1f\n", current->data.GPA);
+        current = current->next;
+    
     }
-
     fclose(output);
 }
 
