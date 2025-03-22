@@ -3,16 +3,17 @@
 #include "student.h"
 #define MAXSTUD 10
 
-void writeData(Student *student, int numStudents);
-void readData(const char *file, Student *student, int *numStudents);
+void writeData(StudentNode** head, int numStudents);
+void readData(const char *file, StudentNode** head, int *numStudents);
 float calculateGPA(float grades[], int numGrades);
-void mergeSort(Student arr[], int left, int right, int type);
-void searchForStudent(Student students[], int numStudents);
-Student *searchID(Student arr[], int Id, int numStudents);
-Student *searchName(Student arr[], char *name, int numStudents);
+void mergeSort(StudentNode** head, int type);
+void searchForStudent(StudentNode **head, int numStudents);
+Student *searchID(StudentNode **head, int Id);
+Student *searchName(StudentNode **head, char *name);
+void addStudent(StudentNode** head, Student newStudent);
 
 int main() {
-    Student stud[MAXSTUD];
+    StudentNode* head = NULL;
     int numStudents = 0;
     int type;
     int choice;
@@ -31,19 +32,19 @@ int main() {
         scanf("%d", &choice);
        
         if (choice == 1) {
-            readData("student.csv", stud, &numStudents);
+            readData("student.csv", &head, &numStudents);
         } else if (choice == 2) {
             printf("\n --How do you want to sort the students:\n 1.) ID\n 2.) GPA\n 3.) Name\n ");
             printf("Choice of sort: ");
             scanf("%d", &type);
-            mergeSort(stud, 0, numStudents-1, type);
+            mergeSort(&head, type);
             printf("Sorted!\n");
         } else if (choice == 3) {
-            writeData(stud, numStudents);
+            writeData(&head, numStudents);
             printf("Successfully exported students grades with GPA to studentGrades.csv\n");
         } else if(choice == 4) {
            printf("Search for student by: \n");
-           searchForStudent(stud, numStudents);
+           searchForStudent(&head, numStudents);
         }
         
     } while (choice != 5);
