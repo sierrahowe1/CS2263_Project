@@ -4,6 +4,8 @@
 #define MAXSIZEE 10
 #define MAXLENGTH 1024
 
+typedef struct StudentNode StudentNode;
+
 typedef struct
 {
 int id;
@@ -14,5 +16,13 @@ int numGrades;
 float GPA;
 
 }Student;
+
+
+
+typedef struct StudentNode{
+   Student data;
+   StudentNode *next;
+   
+}StudentNode;
 
 #endif
