@@ -1,3 +1,10 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "student.h"
+#define MAXSTUD 10
+
+void writeData(StudentNode** head, int numStudents);
+void readData(const char *file, StudentNode** head, int *numStudents);
 float calculateGPA(float grades[], int numGrades);
 void mergeSort(StudentNode** head, int type);
 void searchForStudent(StudentNode **head, int numStudents);
@@ -6,6 +13,7 @@ Student *searchName(StudentNode **head, char *name);
 void addStudent(StudentNode** head, Student newStudent);
 void freeList(StudentNode** head);
 void removeStudent(StudentNode **head, int id);
+void printBarChart(Student student);
 
 int main() {
     StudentNode* head = NULL;
@@ -38,12 +46,11 @@ int main() {
                 printf("Choice of sort: ");
                 scanf("%d", &type);
                 mergeSort(&head, type);
-                printf("Sorted!\n");
+           
                 break;
 
             case 3: 
                 writeData(&head, numStudents);
-                printf("Successfully exported students grades with GPA to studentGrades.csv\n");
                 break;
             case 4:
                 printf("Search for student by: \n");
