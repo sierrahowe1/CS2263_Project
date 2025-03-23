@@ -138,6 +138,20 @@ char *trim(char *s) {
 }
 
 
+Student *searchID(StudentNode **head, int Id) {
+   StudentNode *current = *head;
+   while(current != NULL) {
+      if(current->data.id == Id) {
+         return &current->data;
+      }
+      current = current->next;
+   }
+   return NULL;
+
+}
+
+
+
 void readData(const char *file, StudentNode** head, int *numStudents) {
     char lines[MAXSIZE];
 
@@ -204,9 +218,14 @@ void readData(const char *file, StudentNode** head, int *numStudents) {
         } else {
             stud.GPA = 0.0;  
         }
-        printf("%d, %s", stud.id, stud.name);
-        addStudent(head, stud);
-        (*numStudents)++;
+        if(searchID(head, stud.id) == NULL) {
+           addStudent(head, stud);
+           (*numStudents)++;
+        }
+        else {
+           printf("Duplicate student entry found!");
+        }
+        
         
         
     }
@@ -251,7 +270,32 @@ void mergeSort(StudentNode** head, int type) {
    mergeSort(&b, type);
    
    *head = merge(a, b, type);
-    
+       
+}
+
+
+void printBarChart(Student *student) {
+   int numBars;
+   for(int i = 0; i < student->numGrades; i++) {
+      printf(" %s |", student->classes[i]);
+         if(student->grades[i] > 0 && student->grades[i] < 100) {
+            numBars = fmodf((student->grades[i])/10, 10);
+         }
+         else if(student->grades[i] == 100) {
+            numBars = (student->grades[i])/10;
+         }
+         else {
+            printf("Invalid grade found");
+            break;
+         }
+      
+      for(int j = 0; j < numBars; j++) {
+         printf("#");
+      }
+      printf(" (%.1f)\n", student->grades[i]);
+   }
+   
+   
 }
 
 
@@ -264,18 +308,6 @@ Student *searchName(StudentNode **head, char *name) {
       current = current->next;
    }
    return NULL;
-}
-
-Student *searchID(StudentNode **head, int Id) {
-   StudentNode *current = *head;
-   while(current != NULL) {
-      if(current->data.id == Id) {
-         return &current->data;
-      }
-      current = current->next;
-   }
-   return NULL;
-
 }
 
 
@@ -296,8 +328,11 @@ void searchForStudent(StudentNode **head, int numStudents) {
    
       Student *student = searchName(head, name);
       if(student != NULL) {
+         printf("\n");
          printf("Student successfully located!\n");
+         printf("\n");
          printf("ID: %d, Name: %s, GPA: %.1f\n", student->id, trim(student->name), student->GPA);
+         printBarChart(student);
       }
       else {
          printf("Student not found.\n");
@@ -313,6 +348,7 @@ void searchForStudent(StudentNode **head, int numStudents) {
       if(student != NULL) {
          printf("Student successfully located:\n");
          printf("ID: %d, Name: %s, GPA: %.1f\n", student->id, student->name, student->GPA);
+         printBarChart(student);
       }
       else {
          printf("Student not found.\n");
@@ -322,31 +358,6 @@ void searchForStudent(StudentNode **head, int numStudents) {
    else {
       printf("Must enter a valid choice\n");
    }
-   
-}
-
-
-void printBarChart(Student student) {
-   int numBars;
-   for(int i = 0; i < student.numGrades; i++) {
-      printf("%s |", student.classes[i]);
-         if(student.grades[i] > 0 && student.grades[i] < 100) {
-            numBars = fmodf((student.grades[i])/10, 10);
-         }
-         else if(student.grades[i] == 100) {
-            numBars = (student.grades[i])/10;
-         }
-         else {
-            printf("Invalid grade found");
-            break;
-         }
-      
-      for(int j = 0; j < numBars; j++) {
-         printf("#");
-      }
-      printf(" (%.1f)\n", student.grades[i]);
-   }
-   
    
 }
 
@@ -367,7 +378,14 @@ void writeData(StudentNode** head, int numStudents) {
         }
         fprintf(output, ", GPA: %.1f\n", current->data.GPA);
         current = current->next;
+        
     
+    }
+    if(*head == NULL) {
+       printf("Could not write data");
+    }
+    else {
+       printf("Successfully wrote data");
     }
     fclose(output);
 }
