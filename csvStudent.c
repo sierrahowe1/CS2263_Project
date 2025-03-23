@@ -32,6 +32,29 @@ void addStudent(StudentNode** head, Student newStudent) {
 
 }
 
+void removeStudent(StudentNode **head, int id) {
+   StudentNode *node = *head;
+   if(node == NULL) {
+      return;
+   }
+   if(node->data.id == id) {
+      *head = (*head)->next;
+      free(node);
+   }
+   
+   StudentNode *otherNode = *head;
+   node = otherNode->next;
+   while((node != NULL) && (node->data.id) != id) {
+      otherNode = otherNode->next;
+      node = node->next;
+   }
+   if(node != NULL) {
+      otherNode->next = node->next;
+      free(node);
+   }
+   
+}
+
 
 float calculateGPA(float grades[], int numGrades) {
     float total = 0.0;
@@ -347,5 +370,14 @@ void writeData(StudentNode** head, int numStudents) {
     
     }
     fclose(output);
+}
+
+void freeList(StudentNode** head) {
+   while(*head != NULL) {
+      StudentNode *current = (*head)->next;
+      free(*head);
+      *head = current;
+   }
+
 }
 
