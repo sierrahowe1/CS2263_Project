@@ -13,7 +13,7 @@ Student *searchName(StudentNode **head, char *name);
 void addStudent(StudentNode** head, Student newStudent);
 void freeList(StudentNode** head);
 void removeStudent(StudentNode **head, int id);
-void printBarChart(Student student);
+void printBarChart(Student *student);
 
 int main() {
     StudentNode* head = NULL;
@@ -72,7 +72,4 @@ int main() {
                 break;
         }
     }
-    
-    
-    
 }
