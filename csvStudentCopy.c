@@ -9,7 +9,6 @@
 
 float fmodf(float x, float y);
 
-
 void addStudent(StudentNode** head, Student newStudent) {
    StudentNode *node = (StudentNode *)malloc(sizeof(StudentNode));
    if(node == NULL) {
@@ -29,45 +28,39 @@ void addStudent(StudentNode** head, Student newStudent) {
       }
       current->next = node;
    }
-
 }
 
 void removeStudent(StudentNode **head, int id) {
-   StudentNode *node = *head;
-   if(*head == NULL) {
-      return;
-   }
-   if(node->data.id == id) {
-      
-      *head = (*head)->next;
-      
-      free(node->data.name);
-      free(node->data.grades);
-      for(int i = 0; i < node->data.numGrades; i++) {
-         free(node->data.classes[i]);
-      }
-      free(node);
-   }
-   
-   StudentNode *otherNode = *head;
-   while((node != NULL) && (node->data.id) != id) {
-      otherNode = otherNode->next;
-      node = node->next;
-   }
-   if(node != NULL) {
-      node = otherNode->next;
-      otherNode->next = node->next;
-      
-      free(node->data.name);
-      free(node->data.grades);
-      for(int i = 0; i < node->data.numGrades; i++) {
-         free(node->data.classes[i]);
-      }
-      free(node);
-   }
-   
-}
+    if (*head == NULL) return;
 
+    if ((*head)->data.id == id) {
+        StudentNode *node = *head;
+        *head = (*head)->next;
+        free(node->data.name);
+        free(node->data.grades);
+        for (int i = 0; i < node->data.numGrades; i++) {
+            free(node->data.classes[i]);
+        }
+        free(node);
+        return;
+    }
+
+    StudentNode *current = *head;
+    while (current->next != NULL && current->next->data.id != id) {
+        current = current->next;
+    }
+
+    if (current->next != NULL) {
+        StudentNode *node = current->next;
+        current->next = node->next;
+        free(node->data.name);
+        free(node->data.grades);
+        for (int i = 0; i < node->data.numGrades; i++) {
+            free(node->data.classes[i]);
+        }
+        free(node);
+    }
+}
 
 float calculateGPA(float grades[], int numGrades) {
     float total = 0.0;
@@ -76,7 +69,6 @@ float calculateGPA(float grades[], int numGrades) {
         printf("There are no grades associated with this student\n");
         return 0.0;
     }
-    
     
     for (int i = 0; i < numGrades; i++) {
        if(grades[i] > 100 || grades[i] < 0) {
@@ -109,7 +101,6 @@ int compare(const void* a, const void* b, int type) {
     else if (type == 3) {value = strcmp(s1->name, s2->name);}
     return value;
 }
-
 
 StudentNode *merge(StudentNode *node1, StudentNode *node2, int type) {
    if(node1 == NULL) {
@@ -150,7 +141,6 @@ char *trim(char *s) {
    return s;
 }
 
-
 Student *searchID(StudentNode **head, int Id) {
    StudentNode *current = *head;
    while(current != NULL) {
@@ -160,9 +150,7 @@ Student *searchID(StudentNode **head, int Id) {
       current = current->next;
    }
    return NULL;
-
 }
-
 
 
 void readData(const char *file, StudentNode** head, int *numStudents) {
@@ -278,6 +266,7 @@ void readData(const char *file, StudentNode** head, int *numStudents) {
     fclose(input);
 }
 
+
 void split(StudentNode *head, StudentNode **a, StudentNode **b) {
    StudentNode *fast = head;
    StudentNode *slow = head;
@@ -294,7 +283,6 @@ void split(StudentNode *head, StudentNode **a, StudentNode **b) {
    slow->next = NULL;
 }
 
-
 void mergeSort(StudentNode** head, int type) {
    StudentNode *head2 = *head;
    StudentNode *a;
@@ -309,34 +297,29 @@ void mergeSort(StudentNode** head, int type) {
    mergeSort(&b, type);
    
    *head = merge(a, b, type);
-       
 }
-
 
 void printBarChart(Student *student) {
    int numBars;
    for(int i = 0; i < student->numGrades; i++) {
       printf(" %s |", student->classes[i]);
-         if(student->grades[i] > 0 && student->grades[i] < 100) {
-            numBars = fmodf((student->grades[i])/10, 10);
-         }
-         else if(student->grades[i] == 100) {
-            numBars = (student->grades[i])/10;
-         }
-         else {
-            printf("Invalid grade found");
-            break;
-         }
+      if(student->grades[i] > 0 && student->grades[i] < 100) {
+         numBars = fmodf((student->grades[i])/10, 10);
+      }
+      else if(student->grades[i] == 100) {
+         numBars = (student->grades[i])/10;
+      }
+      else {
+         printf("Invalid grade found");
+         break;
+      }
       
       for(int j = 0; j < numBars; j++) {
          printf("#");
       }
       printf(" (%.1f)\n", student->grades[i]);
    }
-   
-   
 }
-
 
 Student *searchName(StudentNode **head, char *name) {
    StudentNode *current = *head;
@@ -349,34 +332,26 @@ Student *searchName(StudentNode **head, char *name) {
    return NULL;
 }
 
-
 void searchForStudent(StudentNode **head, int numStudents) {
-   
    int choice;
    printf("1.) Name, 2.) ID\n");
    printf("Choose searching criteria: ");
    scanf("%d", &choice);
-   
-   
    
    if(choice == 1) {
       char name[MAXSIZEE];
       printf("Enter students name: ");
       scanf(" %[^\n]", name);
    
-   
       Student *student = searchName(head, name);
       if(student != NULL) {
-         printf("\n");
-         printf("Student successfully located!\n");
-         printf("\n");
+         printf("\nStudent successfully located!\n\n");
          printf("ID: %d, Name: %s, GPA: %.1f\n", student->id, trim(student->name), student->GPA);
          printBarChart(student);
       }
       else {
          printf("Student not found.\n");
       }
-   
    }
    else if(choice == 2) {
       int id;
@@ -392,14 +367,11 @@ void searchForStudent(StudentNode **head, int numStudents) {
       else {
          printf("Student not found.\n");
       }
-      
    }
    else {
       printf("Must enter a valid choice\n");
    }
-   
 }
-
 
 void writeData(StudentNode** head, int numStudents) {
     FILE *output = fopen("studentGrades.csv", "w");
@@ -409,7 +381,6 @@ void writeData(StudentNode** head, int numStudents) {
     }
     
     StudentNode *current = *head;
-    
     while(current != NULL) {
        fprintf(output, "%d, %s", current->data.id, current->data.name);
        for (int j = 0; j < current->data.numGrades; j++) {
@@ -417,22 +388,14 @@ void writeData(StudentNode** head, int numStudents) {
         }
         fprintf(output, ", GPA: %.1f\n", current->data.GPA);
         current = current->next;
-        
+    }
     
-    }
-    if(*head == NULL) {
-       printf("Could not write data");
-    }
-    else {
-       printf("Successfully wrote data");
-    }
     fclose(output);
 }
 
 void freeList(StudentNode** head) {
    while(*head != NULL) {
       StudentNode *current = (*head)->next;
-      
       free((*head)->data.name);
       free((*head)->data.grades);
       for(int i = 0; i < (*head)->data.numGrades; i++) {
@@ -441,5 +404,4 @@ void freeList(StudentNode** head) {
       free(*head);
       *head = current;
    }
-
 }
