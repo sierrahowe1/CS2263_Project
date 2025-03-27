@@ -34,11 +34,13 @@ void addStudent(StudentNode** head, Student newStudent) {
 
 void removeStudent(StudentNode **head, int id) {
    StudentNode *node = *head;
-   if(node == NULL) {
+   if(*head == NULL) {
       return;
    }
    if(node->data.id == id) {
+      
       *head = (*head)->next;
+      
       free(node->data.name);
       free(node->data.grades);
       for(int i = 0; i < node->data.numGrades; i++) {
@@ -48,13 +50,14 @@ void removeStudent(StudentNode **head, int id) {
    }
    
    StudentNode *otherNode = *head;
-   node = otherNode->next;
    while((node != NULL) && (node->data.id) != id) {
       otherNode = otherNode->next;
       node = node->next;
    }
    if(node != NULL) {
+      node = otherNode->next;
       otherNode->next = node->next;
+      
       free(node->data.name);
       free(node->data.grades);
       for(int i = 0; i < node->data.numGrades; i++) {
@@ -204,8 +207,22 @@ void readData(const char *file, StudentNode** head, int *numStudents) {
         trim(stud.name);
         
         stud.grades = (float *)malloc(MAXSIZEE * sizeof(float));
+        if(stud.grades == NULL) {
+           printf("Could not allocate memory");
+           free(stud.name);
+           continue;
+        }
         for(int i = 0; i < MAXSIZEE; i++) {
            stud.classes[i] = (char *)malloc(MAXLEN * sizeof(char));
+           if(stud.classes[i] == NULL) {
+              printf("Could not allocate memory");
+              for(int j = 0; j < i; j++) {
+                 free(stud.classes[j]);
+              }
+              free(stud.grades);
+              free(stud.name);
+
+           }
         }
         
         stud.numGrades = 0;
@@ -415,6 +432,7 @@ void writeData(StudentNode** head, int numStudents) {
 void freeList(StudentNode** head) {
    while(*head != NULL) {
       StudentNode *current = (*head)->next;
+      
       free((*head)->data.name);
       free((*head)->data.grades);
       for(int i = 0; i < (*head)->data.numGrades; i++) {
