@@ -152,7 +152,6 @@ Student *searchID(StudentNode **head, int Id) {
    return NULL;
 }
 
-
 void readData(const char *file, StudentNode** head, int *numStudents) {
     char lines[MAXSIZE];
 
@@ -162,7 +161,6 @@ void readData(const char *file, StudentNode** head, int *numStudents) {
         return;
     }
     
-
     while (fgets(lines, MAXSIZE, input) != NULL) {
         if (*numStudents >= 100) { 
             printf("Out of bounds.\n");
@@ -175,7 +173,6 @@ void readData(const char *file, StudentNode** head, int *numStudents) {
         if (del == NULL) {
             printf("Invalid format.\n");
             continue;
-            
         }
         stud.id = atoi(del); 
 
@@ -183,8 +180,6 @@ void readData(const char *file, StudentNode** head, int *numStudents) {
         if (del == NULL) {
             printf("Invalid format.\n");
             continue;
-            
-            
         }
         stud.name = (char *)malloc((strlen(del) + 1) * sizeof(char));
         if(stud.name == NULL) {
@@ -194,23 +189,19 @@ void readData(const char *file, StudentNode** head, int *numStudents) {
         strcpy(stud.name, del); 
         trim(stud.name);
         
+        
+        
         stud.grades = (float *)malloc(MAXSIZEE * sizeof(float));
         if(stud.grades == NULL) {
            printf("Could not allocate memory");
            free(stud.name);
            continue;
         }
-        for(int i = 0; i < MAXSIZEE; i++) {
-           stud.classes[i] = (char *)malloc(MAXLEN * sizeof(char));
-           if(stud.classes[i] == NULL) {
-              printf("Could not allocate memory");
-              for(int j = 0; j < i; j++) {
-                 free(stud.classes[j]);
-              }
-              free(stud.grades);
-              free(stud.name);
 
-           }
+        
+        
+        for(int i = 0; i < MAXSIZEE; i++) {
+            stud.classes[i] = NULL;
         }
         
         stud.numGrades = 0;
@@ -220,51 +211,54 @@ void readData(const char *file, StudentNode** head, int *numStudents) {
                break;
             }  
 
+            stud.classes[stud.numGrades] = (char *)malloc(MAXLEN * sizeof(char));
+            if(stud.classes[stud.numGrades] == NULL) {
+                printf("Could not allocate memory");
+                break;
+            }
+            
             
             strncpy(stud.classes[stud.numGrades], del, MAXLEN);
             stud.classes[stud.numGrades][MAXLEN - 1] = '\0';
 
-            
             del = strtok(NULL, ",\n");
             if (del == NULL) {
                 del = "0.0";
-                
             }
 
-            
             stud.grades[stud.numGrades] = atof(del);
             stud.numGrades++;
         }
 
-        
         if (stud.numGrades > 0) {
             stud.GPA = calculateGPA(stud.grades, stud.numGrades);
         } else {
             stud.GPA = 0.0;  
         }
+
         if(searchID(head, stud.id) == NULL) {
-           addStudent(head, stud);
-           (*numStudents)++;
+            addStudent(head, stud);
+            (*numStudents)++;
         }
         else {
-           printf("Duplicate student entry found!");
-           free(stud.name);
-           free(stud.grades);
-           for(int i = 0; i < MAXSIZEE; i++) {
-              free(stud.classes[i]);
-           }
+            printf("Duplicate student entry found!");
+            free(stud.name);
+            free(stud.grades);
+            for(int i = 0; i < stud.numGrades; i++) {
+                if(stud.classes[i] != NULL) {
+                    free(stud.classes[i]);
+                }
+            }
         } 
-        
     }
-    
     
     if(*numStudents == 0) {
        printf("This file is empty.\n");
     }
     
-    
     fclose(input);
 }
+
 
 
 void split(StudentNode *head, StudentNode **a, StudentNode **b) {
