@@ -151,11 +151,11 @@ int main() {
    	   
    //Testing remove
    	   //Removing invalid student
-   	   int invalidID = 4;
-   	   removeStudent(&head, invalidID); 
+   	   int validID = 4;
+   	   removeStudent(&head, validID); 
    	 
 	   
 	   //Removing valid student
-   	   int validID = 3;
-   	   removeStudent(&head, validID);   	   	   
+   	   int invalidID = 3;
+   	   removeStudent(&head, invalidID);   	   	   
 }
