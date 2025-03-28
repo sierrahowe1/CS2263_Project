@@ -4,7 +4,7 @@
 #include <math.h>
 #define MAXSIZE 1024
 #define MAXLEN 30
-#include "studentCopy.h"
+#include "student.h"
 #include <ctype.h>
 
 float fmodf(float x, float y);
@@ -42,6 +42,7 @@ void removeStudent(StudentNode **head, int id) {
             free(node->data.classes[i]);
         }
         free(node);
+        printf("Student has successfully been removed");
         return;
     }
 
@@ -59,6 +60,10 @@ void removeStudent(StudentNode **head, int id) {
             free(node->data.classes[i]);
         }
         free(node);
+        printf("Student has successfully been removed");
+    }
+    else {
+       printf("\nCould not remove student because student is not in list\n");
     }
 }
 
@@ -154,6 +159,7 @@ Student *searchID(StudentNode **head, int Id) {
 
 void readData(const char *file, StudentNode** head, int *numStudents) {
     char lines[MAXSIZE];
+    int empty = 1;
 
     FILE *input = fopen(file, "r");
     if (input == NULL) {
@@ -162,6 +168,7 @@ void readData(const char *file, StudentNode** head, int *numStudents) {
     }
     
     while (fgets(lines, MAXSIZE, input) != NULL) {
+        empty = 0;
         if (*numStudents >= 100) { 
             printf("Out of bounds.\n");
             break;
@@ -170,8 +177,8 @@ void readData(const char *file, StudentNode** head, int *numStudents) {
         Student stud;
         char *del = strtok(lines, ","); 
 
-        if (del == NULL) {
-            printf("Invalid format.\n");
+        if (del == NULL || !isdigit(del[0])) {
+            printf("Invalidy format.\n");
             continue;
         }
         stud.id = atoi(del); 
@@ -252,7 +259,7 @@ void readData(const char *file, StudentNode** head, int *numStudents) {
         } 
     }
     
-    if(*numStudents == 0) {
+    if(empty == 1) {
        printf("This file is empty.\n");
     }
     
