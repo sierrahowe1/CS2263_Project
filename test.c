@@ -29,6 +29,14 @@ int main() {
 	   int size2 = sizeof(validGrades)/sizeof(validGrades[0]);
 	   printf("Valid GPA Test: \n");
 	   printf("%.1f\n", calculateGPA(validGrades, size2));
+	   
+	   //Testing empty grades
+	   printf("_______________________________\n");
+	   float emptyGrades[] = {};
+	   int size3 = sizeof(emptyGrades)/sizeof(emptyGrades[0]);
+	   printf("Empty GPA Test: \n");
+	   printf("%.1f\n", calculateGPA(emptyGrades, size3));
+    
     
    //Testing reading data from csv
 	   //empty file
@@ -69,10 +77,9 @@ int main() {
 	   printBarChart(pointer);
 	   
 	   
-	     //Invalid grade for barchart
+	   //Invalid grade for barchart
 	   printf("_______________________________\n");
 	   printf("Printing barchart invalid: \n");
-	   //Student try = {1, "sierra", {95.0, 67.0, 55.0}, {"Java","Chemistry","Calculus"}, 3, 3.1};
 	   Student student4;
 	   student4.id = 5;
 	   student4.name = "Paige";
@@ -186,7 +193,5 @@ int main() {
    	   removeStudent(&head, validID); 
    	   
    	//writeData
-   	writeData(&list, 3);
-   	   
-   	  	   	   
+   	writeData(&list, 3);	   	   
 }
