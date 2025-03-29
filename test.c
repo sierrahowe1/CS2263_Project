@@ -67,6 +67,27 @@ int main() {
 	   student2.GPA = 3.1;
 	   Student *pointer = &student2;
 	   printBarChart(pointer);
+	   
+	   
+	     //Invalid grade for barchart
+	   printf("_______________________________\n");
+	   printf("Printing barchart invalid: \n");
+	   //Student try = {1, "sierra", {95.0, 67.0, 55.0}, {"Java","Chemistry","Calculus"}, 3, 3.1};
+	   Student student4;
+	   student4.id = 5;
+	   student4.name = "Paige";
+	   student4.numGrades = 3;
+	   student4.grades = malloc(student2.numGrades * sizeof(float));
+	   student4.grades[0] = 95.0;
+	   student4.grades[1] = 101.0;
+	   student4.grades[2] = 55.5;
+	   student4.classes[0] = "Discrete";
+	   student4.classes[1] = "Math";
+	   student4.classes[2] = "Reading";
+	   student4.GPA = 3.5;
+	   Student *pointer2 = &student4;
+	   printBarChart(pointer2);
+	   printf("\n");
    
    //Testing sorting
 	   printf("_______________________________\n");  
@@ -145,17 +166,27 @@ int main() {
 	     current = current->next;
 	   }
 	   
+	   
+	   
    //Testing search
    	   //Search for students 
-   	   //searchForStudent(&list, 3);
+   	   printf("Searching Test: \n");
+   	   
+   	      searchForStudent(&head, 3);
+   	   
    	   
    //Testing remove
    	   //Removing invalid student
-   	   int validID = 4;
-   	   removeStudent(&head, validID); 
+   	   int invalidID = 4;
+   	   removeStudent(&head, invalidID); 
    	 
 	   
 	   //Removing valid student
-   	   int invalidID = 3;
-   	   removeStudent(&head, invalidID);   	   	   
+   	   int validID = 3;
+   	   removeStudent(&head, validID); 
+   	   
+   	//writeData
+   	writeData(&list, 3);
+   	   
+   	  	   	   
 }
