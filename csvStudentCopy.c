@@ -263,6 +263,7 @@ void readData(const char *file, StudentNode** head, int *numStudents) {
        printf("This file is empty.\n");
     }
     
+    printf("Data has been imported, List contains %d students\n", *numStudents);
     fclose(input);
 }
 
@@ -392,6 +393,19 @@ void writeData(StudentNode** head, int numStudents) {
     }
     
     fclose(output);
+}
+
+void writeDataTerminal(StudentNode** head, int numStudents) {
+    StudentNode *current = *head;
+    printf("ID --  Name -- Courses and Grades --- GPA\n");
+    while(current != NULL) {
+       printf(" %d , %s,", current->data.id, current->data.name);
+       for (int j = 0; j < current->data.numGrades; j++) {
+            printf(" %s, %.1f|", current->data.classes[j], current->data.grades[j]);
+        }
+        printf(" GPA: %.1f\n", current->data.GPA);
+        current = current->next;
+    }
 }
 
 void freeList(StudentNode** head) {
