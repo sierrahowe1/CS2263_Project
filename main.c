@@ -14,6 +14,7 @@ void addStudent(StudentNode** head, Student newStudent);
 void freeList(StudentNode** head);
 void removeStudent(StudentNode **head, int id);
 void printBarChart(Student *student);
+void writeDataTerminal(StudentNode** head, int numStudents);
 
 int main() {
     StudentNode* head = NULL;
@@ -32,8 +33,9 @@ int main() {
         printf("2. Sort Students by criteria\n");
         printf("3. Export students to a CSV with GPA calculated\n");
         printf("4. Search for a student by name or id\n");
-        printf("5. Remove Student\n");
-        printf("6. Exit\n");
+        printf("5. Print list of Students\n");
+        printf("6. Remove Student\n");
+        printf("7. Exit\n");
         printf("\nWhat would you like to do today: ");
         scanf("%d", &choice);
         
@@ -46,9 +48,7 @@ int main() {
                 printf("Choice of sort: ");
                 scanf("%d", &type);
                 mergeSort(&head, type);
-           
                 break;
-
             case 3: 
                 writeData(&head, numStudents);
                 break;
@@ -57,12 +57,15 @@ int main() {
                 searchForStudent(&head, numStudents);
                 break;
             case 5: 
+                writeDataTerminal(&head, numStudents);
+                break;
+            case 6: 
                 printf("Which student would you like to remove (enter their ID): \n");
                 printf("ID: ");
                 scanf("%d", &id);
                 removeStudent(&head, id);
                 break;
-            case 6:
+            case 7:
                 freeList(&head);
                 printf("\nThank you for using our system! Have a lovely day\n");
                 printf("\n");
